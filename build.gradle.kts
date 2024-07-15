@@ -20,7 +20,7 @@ java {
 dependencies {
     implementation("org.junit.jupiter:junit-jupiter-engine:5.7.0")
     implementation("com.github.javaparser:javaparser-symbol-solver-core:3.25.6")
-    implementation("net.sourceforge.plantuml:plantuml:1.2023.12") // 示例版本
+    implementation("net.sourceforge.plantuml:plantuml:1.2024.6") // 示例版本
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
