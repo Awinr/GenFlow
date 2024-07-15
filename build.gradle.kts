@@ -2,7 +2,7 @@ fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
 
 plugins {
-    id("org.jetbrains.intellij") version "1.16.0"
+    id("org.jetbrains.intellij") version "1.17.4"
     id("java")
 }
 
