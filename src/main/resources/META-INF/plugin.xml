@@ -1,0 +1,35 @@
+<idea-plugin>
+    <vendor email="1623859508@qq.com">itxiaodongbei</vendor>
+    <id>JavaFlowDiagram</id>
+
+    <name>JavaFlowDiagram</name>
+    <description><![CDATA[
+<h3>JavaFlowDiagram for IntelliJ IDEA</h3>
+<p>with this plugin, you can<br>
++ generate Simple flow Diagram.<br>
++ Select whether to add the common method by setting<br>
++ Export the diagram as image.<br>
++ Export the diagram as image.<br>
+]]></description>
+    <version>1.2.2</version>
+    <idea-version since-build="231.*"/>
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="PlantUMLToolWindow"
+                    anchor="right"
+                    canCloseContents="true"
+                    icon="/icons/flowdiagram.svg"
+                    factoryClass="com.it.xiaodongbei.flowdiagram.window.PlantUMLToolWindowFactory"
+        />
+    </extensions>
+    <actions>
+        <action id="GenAPIDocAction" class="com.it.xiaodongbei.flowdiagram.action.JavaFlowDiagramAction"
+                icon="/icons/flowdiagram.svg"
+                text="FlowDiagram">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+
+    </actions>
+</idea-plugin>
