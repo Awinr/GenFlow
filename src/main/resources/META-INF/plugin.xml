@@ -1,5 +1,5 @@
 <idea-plugin>
-    <vendor email="1623859508@qq.com">itxiaodongbei</vendor>
+    <vendor email="1623859508@qq.com">itaaron</vendor>
     <id>JavaFlowDiagram</id>
 
     <name>JavaFlowDiagram</name>
@@ -16,17 +16,19 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
 
+    <!-- 右边侧边栏 -->
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="PlantUMLToolWindow"
                     anchor="right"
                     canCloseContents="true"
-                    icon="/icons/flowdiagram.svg"
-                    factoryClass="com.it.xiaodongbei.flowdiagram.window.PlantUMLToolWindowFactory"
+                    icon="/icons/gencodeflow.svg"
+                    factoryClass="com.it.aaron.gencodeflow.window.PlantUMLToolWindowFactory"
         />
     </extensions>
+    <!-- 右键弹出菜单 -->
     <actions>
-        <action id="GenAPIDocAction" class="com.it.xiaodongbei.flowdiagram.action.JavaFlowDiagramAction"
-                icon="/icons/flowdiagram.svg"
+        <action id="GenAPIDocAction" class="com.it.aaron.gencodeflow.action.JavaFlowDiagramAction"
+                icon="/icons/gencodeflow.svg"
                 text="FlowDiagram">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>

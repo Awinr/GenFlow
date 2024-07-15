@@ -1,4 +1,4 @@
-package com.it.xiaodongbei.flowdiagram.panel;
+package com.it.aaron.gencodeflow.panel;
 
 /**
  * @Author: cxc

@@ -1,7 +1,7 @@
-package com.it.xiaodongbei.flowdiagram.panel;
+package com.it.aaron.gencodeflow.panel;
 
 import com.intellij.ui.components.JBScrollPane;
-import com.it.xiaodongbei.flowdiagram.toolbar.MyJToolBar;
+import com.it.aaron.gencodeflow.toolbar.MyJToolBar;
 
 import javax.swing.*;
 import java.awt.*;

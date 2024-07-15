@@ -1,6 +1,6 @@
-package com.it.xiaodongbei.flowdiagram.component;
+package com.it.aaron.gencodeflow.component;
 
-import com.it.xiaodongbei.flowdiagram.panel.PlantUMLPanel;
+import com.it.aaron.gencodeflow.panel.PlantUMLPanel;
 
 import javax.swing.*;
 

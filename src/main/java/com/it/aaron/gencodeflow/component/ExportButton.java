@@ -1,4 +1,4 @@
-package com.it.xiaodongbei.flowdiagram.component;
+package com.it.aaron.gencodeflow.component;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;

@@ -1,4 +1,4 @@
-package com.it.xiaodongbei.flowdiagram.action;
+package com.it.aaron.gencodeflow.action;
 
 import com.github.javaparser.StaticJavaParser;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -13,19 +13,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilBase;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.it.xiaodongbei.flowdiagram.component.ExportButton;
-import com.it.xiaodongbei.flowdiagram.component.SettingButton;
-import com.it.xiaodongbei.flowdiagram.component.StartButton;
-import com.it.xiaodongbei.flowdiagram.panel.MainJPanel;
-import com.it.xiaodongbei.flowdiagram.panel.PlantUMLPanel;
-import com.it.xiaodongbei.flowdiagram.utils.PlanUMLUtil;
+import com.it.aaron.gencodeflow.component.ExportButton;
+import com.it.aaron.gencodeflow.component.SettingButton;
+import com.it.aaron.gencodeflow.component.StartButton;
+import com.it.aaron.gencodeflow.panel.MainJPanel;
+import com.it.aaron.gencodeflow.panel.PlantUMLPanel;
+import com.it.aaron.gencodeflow.utils.PlanUMLUtil;
 
-/**
- * @Author: cxc
- * @CreateTime: 2023-10-31  22:21
- * @Description: TODO
- * @Version: 1.0
- */
+
 public class JavaFlowDiagramAction extends AnAction {
     public  AnActionEvent event;
     SettingButton settingButton = new SettingButton();

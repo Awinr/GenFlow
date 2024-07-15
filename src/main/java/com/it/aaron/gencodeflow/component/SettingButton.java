@@ -1,4 +1,4 @@
-package com.it.xiaodongbei.flowdiagram.component;
+package com.it.aaron.gencodeflow.component;
 
 import com.intellij.openapi.util.IconLoader;
 

@@ -42,4 +42,8 @@ tasks {
         sinceBuild = properties("pluginSinceBuild")
         untilBuild = properties("pluginUntilBuild")
     }
+    // 解决插件中显示中文乱码的问题
+    withType(JavaCompile::class.java) {
+        options.encoding = "UTF-8"
+    }
 }
