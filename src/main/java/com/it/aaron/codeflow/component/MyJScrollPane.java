@@ -1,6 +1,6 @@
-package com.it.aaron.gencodeflow.component;
+package com.it.aaron.codeflow.component;
 
-import com.it.aaron.gencodeflow.panel.PlantUMLPanel;
+import com.it.aaron.codeflow.panel.PlantUMLPanel;
 
 import javax.swing.*;
 

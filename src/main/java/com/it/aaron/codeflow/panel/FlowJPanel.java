@@ -1,4 +1,4 @@
-package com.it.aaron.gencodeflow.panel;
+package com.it.aaron.codeflow.panel;
 
 /**
  * @Author: cxc

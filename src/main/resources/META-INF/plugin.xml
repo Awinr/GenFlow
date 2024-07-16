@@ -1,8 +1,8 @@
 <idea-plugin>
-    <vendor email="1623859508@qq.com">itaaron</vendor>
-    <id>JavaFlowDiagram</id>
+    <vendor email="2964643276@qq.com">Aaron</vendor>
+    <id>CodeFlow</id>
 
-    <name>JavaFlowDiagram</name>
+    <name>CodeFlow</name>
     <description><![CDATA[
 <h3>JavaFlowDiagram for IntelliJ IDEA</h3>
 <p>with this plugin, you can<br>
@@ -21,15 +21,15 @@
         <toolWindow id="PlantUMLToolWindow"
                     anchor="right"
                     canCloseContents="true"
-                    icon="/icons/gencodeflow.svg"
-                    factoryClass="com.it.aaron.gencodeflow.window.PlantUMLToolWindowFactory"
+                    icon="/icons/codeflow.svg"
+                    factoryClass="com.it.aaron.codeflow.window.PlantUMLToolWindowFactory"
         />
     </extensions>
     <!-- 右键弹出菜单 -->
     <actions>
-        <action id="GenAPIDocAction" class="com.it.aaron.gencodeflow.action.JavaFlowDiagramAction"
-                icon="/icons/gencodeflow.svg"
-                text="FlowDiagram">
+        <action id="GenAPIDocAction" class="com.it.aaron.codeflow.action.JavaFlowDiagramAction"
+                icon="/icons/codeflow.svg"
+                text="CodeFlow">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>
 

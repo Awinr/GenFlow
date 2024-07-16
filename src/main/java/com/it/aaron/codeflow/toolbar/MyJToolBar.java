@@ -1,4 +1,4 @@
-package com.it.aaron.gencodeflow.toolbar;
+package com.it.aaron.codeflow.toolbar;
 
 import javax.swing.*;
 import java.awt.*;

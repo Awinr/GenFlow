@@ -1,9 +1,11 @@
-package com.it.aaron.gencodeflow.action;
+package com.it.aaron.codeflow.action;
 
 import com.github.javaparser.StaticJavaParser;
+import com.intellij.lang.Language;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
@@ -13,28 +15,56 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilBase;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.it.aaron.gencodeflow.component.ExportButton;
-import com.it.aaron.gencodeflow.component.SettingButton;
-import com.it.aaron.gencodeflow.component.StartButton;
-import com.it.aaron.gencodeflow.panel.MainJPanel;
-import com.it.aaron.gencodeflow.panel.PlantUMLPanel;
-import com.it.aaron.gencodeflow.utils.PlanUMLUtil;
+import com.it.aaron.codeflow.component.ExportButton;
+import com.it.aaron.codeflow.component.SettingButton;
+import com.it.aaron.codeflow.component.StartButton;
+import com.it.aaron.codeflow.panel.MainJPanel;
+import com.it.aaron.codeflow.panel.PlantUMLPanel;
+import com.it.aaron.codeflow.utils.PlanUMLUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
 public class JavaFlowDiagramAction extends AnAction {
-    public  AnActionEvent event;
-    SettingButton settingButton = new SettingButton();
+
+    public AnActionEvent event;
+
+    public SettingButton settingButton = new SettingButton();
+
     private PlantUMLPanel plantUMLPanel;
 
     private StartButton startButton;
+
     private MainJPanel mainJPanel;
 
     private ExportButton exportButton;
 
+    /**
+     * 动作启用/禁用状态
+     *根据文件类型启用或禁用菜单。当前只有 java 文件才能启用菜单。
+     *
+     * @param event event
+     */
+    @Override
+    public void update(@NotNull AnActionEvent event) {
+        super.update(event);
+
+        // Presentation对象包含了与用户界面相关的信息，如操作的名称、描述、图标和 启用/禁用开关。
+        Presentation presentation = event.getPresentation();
+
+        //Program Structure Interface  PSI 会将代码解析成一个树状结构，其中包含了类、方法、语句等节点。
+        @Nullable PsiElement psiElement = event.getData(CommonDataKeys.PSI_FILE);
+        presentation.setEnabled(isEnabled(psiElement));
+    }
+
+    private boolean isEnabled(PsiElement psiElement) {
+        String id = psiElement.getLanguage().getID();
+        return psiElement != null && id.equals("JAVA");
+    }
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        event=e;
+        event = e;
         StringBuilder plantUML = new StringBuilder();
         Project project = e.getProject();
         if (project == null) {
@@ -59,14 +89,14 @@ public class JavaFlowDiagramAction extends AnAction {
         }
         Result result = new Result(project, methodBody);
         // 创建plantuml流程图
-        PlanUMLUtil.createPlantUml(plantUML, StaticJavaParser.parseBlock(result.methodBody.getText()),settingButton.isToolWindowCreated());
+        PlanUMLUtil.createPlantUml(plantUML, StaticJavaParser.parseBlock(result.methodBody.getText()), settingButton.isToolWindowCreated());
 
         // 创建流程图内容面板
         plantUMLPanel = new PlantUMLPanel(plantUML.toString());
         // 启动内容
-        startButton = new StartButton(result.project,event);
-        exportButton = new ExportButton(result.project,event,plantUMLPanel.getPlantUmlImage());
-        mainJPanel = new MainJPanel(plantUMLPanel,startButton,settingButton,exportButton);
+        startButton = new StartButton(result.project, event);
+        exportButton = new ExportButton(result.project, event, plantUMLPanel.getPlantUmlImage());
+        mainJPanel = new MainJPanel(plantUMLPanel, startButton, settingButton, exportButton);
         // 获取 ToolWindow
         ToolWindow toolWindow = ToolWindowManager.getInstance(result.project).getToolWindow("PlantUMLToolWindow");
         // 设置内容
@@ -74,6 +104,7 @@ public class JavaFlowDiagramAction extends AnAction {
         ContentFactory contentFactory = ContentFactory.getInstance();
         Content content = contentFactory.createContent(mainJPanel, "", false);
         toolWindow.getContentManager().addContent(content);
+        toolWindow.setSplitMode(true, null); // 将窗口设置为拆分模式，显示在左上角
 
         // 显示 ToolWindow
         toolWindow.activate(null);

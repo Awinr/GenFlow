@@ -1,7 +1,7 @@
-package com.it.aaron.gencodeflow.panel;
+package com.it.aaron.codeflow.panel;
 
 import com.intellij.ui.components.JBScrollPane;
-import com.it.aaron.gencodeflow.toolbar.MyJToolBar;
+import com.it.aaron.codeflow.toolbar.MyJToolBar;
 
 import javax.swing.*;
 import java.awt.*;

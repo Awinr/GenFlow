@@ -1,4 +1,4 @@
-package com.it.aaron.gencodeflow.component;
+package com.it.aaron.codeflow.component;
 
 import com.intellij.openapi.util.IconLoader;
 
