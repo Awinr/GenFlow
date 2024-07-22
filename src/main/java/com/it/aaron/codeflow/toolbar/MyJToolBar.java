@@ -3,12 +3,7 @@ package com.it.aaron.codeflow.toolbar;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * @Author: cxc
- * @CreateTime: 2023-11-05  22:23
- * @Description: TODO
- * @Version: 1.0
- */
+
 public class MyJToolBar extends JToolBar {
     public MyJToolBar() {
         super(JToolBar.VERTICAL);

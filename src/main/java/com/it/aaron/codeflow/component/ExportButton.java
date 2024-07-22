@@ -13,12 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * @Author: cxc
- * @CreateTime: 2023-11-05  23:23
- * @Description: TODO
- * @Version: 1.0
- */
+
 public class ExportButton extends JButton {
     private final Project project;
     private final AnActionEvent event;

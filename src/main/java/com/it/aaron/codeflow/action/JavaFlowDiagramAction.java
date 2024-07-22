@@ -15,12 +15,13 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtilBase;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import com.it.aaron.codeflow.Constant;
 import com.it.aaron.codeflow.component.ExportButton;
 import com.it.aaron.codeflow.component.SettingButton;
 import com.it.aaron.codeflow.component.StartButton;
 import com.it.aaron.codeflow.panel.MainJPanel;
 import com.it.aaron.codeflow.panel.PlantUMLPanel;
-import com.it.aaron.codeflow.utils.PlanUMLUtil;
+import com.it.aaron.codeflow.utils.CodeFlowUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,20 +53,21 @@ public class JavaFlowDiagramAction extends AnAction {
         // Presentation对象包含了与用户界面相关的信息，如操作的名称、描述、图标和 启用/禁用开关。
         Presentation presentation = event.getPresentation();
 
-        //Program Structure Interface  PSI 会将代码解析成一个树状结构，其中包含了类、方法、语句等节点。
+        // Program Structure Interface  PSI 会将代码解析成一个树状结构，其中包含了类、方法、变量等节点。
+        // PSI 提供了一系列接口和方法，允许开发者读取和修改这些节点
         @Nullable PsiElement psiElement = event.getData(CommonDataKeys.PSI_FILE);
         presentation.setEnabled(isEnabled(psiElement));
     }
 
     private boolean isEnabled(PsiElement psiElement) {
         String id = psiElement.getLanguage().getID();
-        return psiElement != null && id.equals("JAVA");
+        return psiElement != null && id.equals(Constant.JAVA);
     }
 
     @Override
     public void actionPerformed(AnActionEvent e) {
         event = e;
-        StringBuilder plantUML = new StringBuilder();
+        StringBuilder codeString = new StringBuilder();
         Project project = e.getProject();
         if (project == null) {
             return;
@@ -77,28 +79,28 @@ public class JavaFlowDiagramAction extends AnAction {
         PsiFile psiFile = e.getData(CommonDataKeys.PSI_FILE);
         if (!(psiFile instanceof PsiJavaFile)) {
             return;
-        }
-        PsiElement elementAtCaret = PsiUtilBase.getElementAtCaret(editor);
+        } // PsiElement 是 PSI 树中的一个通用节点，表示代码中的任何元素。
+        PsiElement elementAtCaret = PsiUtilBase.getElementAtCaret(editor); // 获取当前编辑器中光标位置所在的 PsiElement。
         PsiMethod method = PsiTreeUtil.getParentOfType(elementAtCaret, PsiMethod.class);
         if (method == null) {
             return;
         }
-        PsiCodeBlock methodBody = method.getBody();
+        PsiCodeBlock methodBody = method.getBody(); // 方法体包含在大括号 {} 中的所有代码。
         if (methodBody == null) {
             return;
         }
         Result result = new Result(project, methodBody);
-        // 创建plantuml流程图
-        PlanUMLUtil.createPlantUml(plantUML, StaticJavaParser.parseBlock(result.methodBody.getText()), settingButton.isToolWindowCreated());
+        // 创建流程图内容
+        CodeFlowUtil.createPlantUml(codeString, StaticJavaParser.parseBlock(result.methodBody.getText()), settingButton.isToolWindowCreated());
 
         // 创建流程图内容面板
-        plantUMLPanel = new PlantUMLPanel(plantUML.toString());
+        plantUMLPanel = new PlantUMLPanel(codeString.toString());
         // 启动内容
-        startButton = new StartButton(result.project, event);
-        exportButton = new ExportButton(result.project, event, plantUMLPanel.getPlantUmlImage());
+        startButton = new StartButton(result.getProject(), event);
+        exportButton = new ExportButton(result.getProject(), event, plantUMLPanel.getPlantUmlImage());
         mainJPanel = new MainJPanel(plantUMLPanel, startButton, settingButton, exportButton);
         // 获取 ToolWindow
-        ToolWindow toolWindow = ToolWindowManager.getInstance(result.project).getToolWindow("PlantUMLToolWindow");
+        ToolWindow toolWindow = ToolWindowManager.getInstance(result.getProject()).getToolWindow("PlantUMLToolWindow");
         // 设置内容
         toolWindow.getContentManager().removeAllContents(true); // 清除之前的内容
         ContentFactory contentFactory = ContentFactory.getInstance();
@@ -112,12 +114,22 @@ public class JavaFlowDiagramAction extends AnAction {
 
 
     private static class Result {
-        public final Project project;
-        public final PsiCodeBlock methodBody;
+
+        private final Project project;
+
+        private final PsiCodeBlock methodBody;
 
         public Result(Project project, PsiCodeBlock methodBody) {
             this.project = project;
             this.methodBody = methodBody;
+        }
+
+        public Project getProject() {
+            return project;
+        }
+
+        public PsiCodeBlock getMethodBody() {
+            return methodBody;
         }
     }
 }

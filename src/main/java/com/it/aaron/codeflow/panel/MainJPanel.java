@@ -6,12 +6,7 @@ import com.it.aaron.codeflow.toolbar.MyJToolBar;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * @Author: cxc
- * @CreateTime: 2023-11-06  21:19
- * @Description: TODO
- * @Version: 1.0
- */
+
 public class MainJPanel extends JPanel {
     private MyJToolBar toolBar;
     private JBScrollPane jScrollPane;

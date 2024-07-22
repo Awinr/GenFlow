@@ -6,12 +6,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * @Author: cxc
- * @CreateTime: 2023-11-05  22:29
- * @Description: TODO
- * @Version: 1.0
- */
+
 public class SettingButton extends JButton {
     private boolean toolWindowCreated=false;
 
