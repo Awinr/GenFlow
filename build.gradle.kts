@@ -18,7 +18,7 @@ java {
 }
 
 dependencies {
-    implementation("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+    implementation("org.junit.jupiter:junit-jupiter-engine:5.10.3")
     implementation("com.github.javaparser:javaparser-symbol-solver-core:3.25.6")
     implementation("net.sourceforge.plantuml:plantuml:1.2023.12") // 示例版本
 //    implementation("org.apache.xmlgraphics:batik-all:1.14")
