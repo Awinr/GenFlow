@@ -1,6 +1,5 @@
 package com.it.aaron.codeflow.panel;
 
-
 import net.sourceforge.plantuml.SourceStringReader;
 
 import javax.swing.*;
@@ -16,7 +15,6 @@ public class PlantUMLPanel extends JPanel {
      * 存储生成的流程图
      */
     private Image plantUmlImage;
-
 
     public PlantUMLPanel(String plantUmlSource) {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -54,7 +52,6 @@ public class PlantUMLPanel extends JPanel {
             reader.outputImage(outputStream);
             // 从字节数组中创建图像
             plantUmlImage = Toolkit.getDefaultToolkit().createImage(((ByteArrayOutputStream) outputStream).toByteArray());
-            // repaint() 方法会触发 paintComponent(Graphics g) 方法的调用，从而在面板上绘制新的图像。
             repaint();
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,7 +65,12 @@ public class PlantUMLPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (plantUmlImage != null) {
-            g.drawImage(plantUmlImage, 0, 0, this);
+            Graphics2D g2d = (Graphics2D) g;
+            // 启用抗锯齿
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            // 绘制图像
+            g2d.drawImage(plantUmlImage, 0, 0, this);
         }
     }
 }

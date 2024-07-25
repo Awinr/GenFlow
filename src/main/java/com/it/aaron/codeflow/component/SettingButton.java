@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 
 
 public class SettingButton extends JButton {
-    private boolean toolWindowCreated=false;
+    private boolean toolWindowCreated = true;
 
     public SettingButton() {
         this.setIcon(IconLoader.findIcon("/icons/settings.svg"));
@@ -23,6 +23,7 @@ public class SettingButton extends JButton {
         this.setToolTipText("settings");
         addActionListener(createSettingsActionListener());
     }
+
     private ActionListener createSettingsActionListener() {
         return new ActionListener() {
             @Override
@@ -55,6 +56,7 @@ public class SettingButton extends JButton {
             }
         };
     }
+
     public boolean isToolWindowCreated() {
         return toolWindowCreated;
     }

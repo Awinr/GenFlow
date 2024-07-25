@@ -23,7 +23,7 @@ public class StartButton extends JButton {
 
     private void initButton() {
         this.setIcon(startIcon);
-        this.setToolTipText("start");
+        this.setToolTipText("Generate");
         addActionListener(createStartActionListener());
     }
 
