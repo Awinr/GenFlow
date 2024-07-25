@@ -19,7 +19,7 @@ java {
 
 dependencies {
     implementation("org.junit.jupiter:junit-jupiter-engine:5.7.0")
-    implementation("com.github.javaparser:javaparser-symbol-solver-core:3.25.6")
+    implementation("com.github.javaparser:javaparser-symbol-solver-core:3.26.1")
     implementation("net.sourceforge.plantuml:plantuml:1.2023.12") // 示例版本
 //    implementation("org.apache.xmlgraphics:batik-all:1.14")
 //    implementation("xerces:xercesImpl:2.12.1")  // 如果需要 XML 解析支持
