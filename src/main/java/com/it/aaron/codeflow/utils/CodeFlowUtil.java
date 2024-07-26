@@ -2,11 +2,13 @@ package com.it.aaron.codeflow.utils;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.*;
 import com.it.aaron.codeflow.Constant;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 // astNode 表示一个代码块。
@@ -14,6 +16,8 @@ public class CodeFlowUtil {
 
     // 替换字符串首尾的 [、]、Optional[、]
     public static final String regex = "^(\\[|Optional\\[)|(\\])$";
+
+    public static final String regexComment = "[/\\n* ]";
 
     public static void createPlantUml(StringBuilder codeString, BlockStmt astNode, boolean isAddMethod) {
         try {
@@ -41,15 +45,12 @@ public class CodeFlowUtil {
             String ifCondition = ifStmt.getCondition().toString();
             boolean isFirstIf = !ifStmt.getParentNode().filter(parent -> parent instanceof IfStmt).isPresent(); //判断 ifStmt 是否是多级 if else 语句 中的第一个 if 语句
             if (isFirstIf) {
-                codeString.append(indent(nestingLevel) + "if(" + ifCondition + ")");
-                codeString.append(indent(nestingLevel) + "then (true)\n");
-                processNestedIfStatements(codeString, ifStmt.getThenStmt(), isTrue, nestingLevel + 1);
-                codeString.append(indent(nestingLevel) + "else (false)\n");
-            } else { // 如果不是第一个 if 语句，则说明是 else if 语句
-                codeString.append(indent(nestingLevel) + "elseif(" + ifCondition + ")");
-                codeString.append(indent(nestingLevel) + "then (true)\n");
-                processNestedIfStatements(codeString, ifStmt.getThenStmt(), isTrue, nestingLevel + 1);
-                codeString.append(indent(nestingLevel) + "else (false)\n");
+                codeString.append(indent(nestingLevel) + "if(" + ifCondition + ")" + indent(nestingLevel) + "then (true)\n" );
+                addIfStmtComment(codeString, isTrue, nestingLevel, ifStmt);
+            } else {
+                // 如果不是第一个 if 语句，则说明是 else if 语句
+                codeString.append(indent(nestingLevel) + "elseif(" + ifCondition + ")" +indent(nestingLevel) + "then (true)\n" );
+                addIfStmtComment(codeString, isTrue, nestingLevel, ifStmt);
             }
 
             if (ifStmt.hasElseBranch()) {
@@ -68,6 +69,10 @@ public class CodeFlowUtil {
             WhileStmt whileStmt = (WhileStmt) astNode;
             String whileCondition = whileStmt.getCondition().toString();
             codeString.append(indent(nestingLevel) + "while (" + whileCondition + ") is (true)\n");
+            if (whileStmt.getComment().isPresent() && Constant.IS_ADD_COMMENT) {
+                String comment = whileStmt.getComment().get().asString();
+                codeString.append(indent(nestingLevel) + "floating note " + Constant.COMMENT_POSITION + comment.replaceAll(regexComment, "") + "\n");
+            }
             processNestedIfStatements(codeString, whileStmt.getBody(), isTrue, nestingLevel + 1);
             codeString.append(indent(nestingLevel) + "endwhile (false)\n");
         } else if (astNode instanceof SwitchStmt) {
@@ -95,6 +100,10 @@ public class CodeFlowUtil {
                 codeString.append(indent(nestingLevel )); // case 分隔
             }
             codeString.append(indent(nestingLevel) + "endswitch\n");
+            if (switchStmt.getComment().isPresent() && Constant.IS_ADD_COMMENT) {
+                String comment = switchStmt.getComment().get().asString();
+                codeString.append(indent(nestingLevel) + "floating note " + Constant.COMMENT_POSITION + comment.replaceAll(regexComment, "") + "\n");
+            }
         } else if (astNode instanceof ReturnStmt) {
             codeString.append("end\n");
         } else if (astNode instanceof ForStmt) {
@@ -107,12 +116,21 @@ public class CodeFlowUtil {
             processNestedIfStatements(codeString, forStmt.getBody(), isTrue, nestingLevel + 1);
             codeString.append(indent(nestingLevel) + "backward:" + updateStmt +";\n");
             codeString.append(indent(nestingLevel) + "repeat while (" + forStmt.getCompare().get() + ") is (true) not (false)\n");
+            if (forStmt.getComment().isPresent() && Constant.IS_ADD_COMMENT) {
+                String comment = forStmt.getComment().get().asString();
+                codeString.append(indent(nestingLevel) + "floating note " + Constant.COMMENT_POSITION + comment.replaceAll(regexComment, "") + "\n");
+            }
         } else { // 以上都不是，则说明是 { }代码块/声明语句
             if (isTrue) {
                 // 处理表达式语句，如方法调用和赋值，遇到try catch 直接append其中的声明语句
                 if (astNode instanceof ExpressionStmt) {
                     ExpressionStmt expressionStmt = (ExpressionStmt) astNode;
                     codeString.append(indent(nestingLevel) + ": " + expressionStmt.getExpression().toString() + ";\n");
+
+                    if (expressionStmt.getComment().isPresent() && Constant.IS_ADD_COMMENT) {
+                        String comment = expressionStmt.getComment().get().asString();
+                        codeString.append(indent(nestingLevel) + "note " + Constant.COMMENT_POSITION + comment.replaceAll(regexComment, "") + "\n");
+                    }
                 }
             }
             // 如果是代码块，递归处理代码块中所有子节点 子节点属于同一个嵌套级别 先序遍历
@@ -121,6 +139,16 @@ public class CodeFlowUtil {
             }
         }
     }
+
+    private static void addIfStmtComment(StringBuilder codeString, boolean isTrue, int nestingLevel, IfStmt ifStmt) {
+        if (ifStmt.getComment().isPresent() && Constant.IS_ADD_COMMENT) {
+            String comment = ifStmt.getComment().get().asString();
+            codeString.append(indent(nestingLevel) + "floating note " + Constant.COMMENT_POSITION + comment.replaceAll(regexComment, "") + "\n");
+        }
+        processNestedIfStatements(codeString, ifStmt.getThenStmt(), isTrue, nestingLevel + 1);
+        codeString.append(indent(nestingLevel) + "else (false)\n");
+    }
+
     private static String indent(int level) {
         return "    ".repeat(level); // 控制缩进级别
     }

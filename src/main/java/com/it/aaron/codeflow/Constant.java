@@ -7,4 +7,6 @@ public interface Constant {
             + "skinparam conditionStyle InsideDiamond\n" //判断样式为菱形
             + "skinparam ConditionEndStyle hline\n"
             ;
+    boolean IS_ADD_COMMENT = true;
+    String COMMENT_POSITION = "right:";
 }
