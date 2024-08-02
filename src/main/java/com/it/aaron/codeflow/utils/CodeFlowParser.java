@@ -2,27 +2,31 @@ package com.it.aaron.codeflow.utils;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.comments.Comment;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.stmt.*;
 import com.it.aaron.codeflow.Constant;
+import com.it.aaron.codeflow.component.CodeFlowParamsState;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 // astNode 表示一个代码块。
-public class CodeFlowUtil {
+public class CodeFlowParser {
 
     // 替换字符串首尾的 [、]、Optional[、]
     public static final String regex = "^(\\[|Optional\\[)|(\\])$";
 
     public static final String regexComment = "[/\\n* ]";
 
+    public  static CodeFlowParamsState setting = CodeFlowParamsState.getInstance();
+
     public static void createPlantUml(StringBuilder codeString, BlockStmt astNode, boolean isAddMethod) {
         try {
             codeString.append("@startuml\n");
             codeString.append(Constant.PARAM);
+            if (!setting.noColors) {
+                codeString.append(Constant.STYLE);
+            }
             codeString.append("start\n");
             // 处理所有嵌套的 IfStmt
             processNestedIfStatements(codeString, astNode, isAddMethod, 0);
@@ -68,8 +72,8 @@ public class CodeFlowUtil {
         } else if (astNode instanceof WhileStmt) {
             WhileStmt whileStmt = (WhileStmt) astNode;
             String whileCondition = whileStmt.getCondition().toString();
-            codeString.append(indent(nestingLevel) + "while (" + whileCondition + ") is (true)\n");
-            if (whileStmt.getComment().isPresent() && Constant.IS_ADD_COMMENT) {
+            codeString.append(indent(nestingLevel) + "while (while(" + whileCondition + ")) is (true)\n");
+            if (whileStmt.getComment().isPresent() && CodeFlowParser.setting.displayComments) {
                 String comment = whileStmt.getComment().get().asString();
                 codeString.append(indent(nestingLevel) + "floating note " + Constant.COMMENT_POSITION + comment.replaceAll(regexComment, "") + "\n");
             }
@@ -100,7 +104,7 @@ public class CodeFlowUtil {
                 codeString.append(indent(nestingLevel )); // case 分隔
             }
             codeString.append(indent(nestingLevel) + "endswitch\n");
-            if (switchStmt.getComment().isPresent() && Constant.IS_ADD_COMMENT) {
+            if (switchStmt.getComment().isPresent() && CodeFlowParser.setting.displayComments) {
                 String comment = switchStmt.getComment().get().asString();
                 codeString.append(indent(nestingLevel) + "floating note " + Constant.COMMENT_POSITION + comment.replaceAll(regexComment, "") + "\n");
             }
@@ -116,18 +120,26 @@ public class CodeFlowUtil {
             processNestedIfStatements(codeString, forStmt.getBody(), isTrue, nestingLevel + 1);
             codeString.append(indent(nestingLevel) + "backward:" + updateStmt +";\n");
             codeString.append(indent(nestingLevel) + "repeat while (" + forStmt.getCompare().get() + ") is (true) not (false)\n");
-            if (forStmt.getComment().isPresent() && Constant.IS_ADD_COMMENT) {
+            if (forStmt.getComment().isPresent() && CodeFlowParser.setting.displayComments) {
                 String comment = forStmt.getComment().get().asString();
                 codeString.append(indent(nestingLevel) + "floating note " + Constant.COMMENT_POSITION + comment.replaceAll(regexComment, "") + "\n");
             }
+        } else if (astNode instanceof TryStmt) {
+            TryStmt tryStmt = (TryStmt) astNode;
+            codeString.append(indent(nestingLevel) + "rectangle {\n");
+            processNestedIfStatements(codeString, tryStmt.getTryBlock(), isTrue, nestingLevel + 1);
+            codeString.append(indent(nestingLevel) + "}\n");
+            if (tryStmt.getFinallyBlock().isPresent()) {
+                codeString.append(indent(nestingLevel) + "-> finally;\n");
+                processNestedIfStatements(codeString, tryStmt.getFinallyBlock().get(), isTrue, nestingLevel + 1);
+            }
         } else { // 以上都不是，则说明是 { }代码块/声明语句
             if (isTrue) {
-                // 处理表达式语句，如方法调用和赋值，遇到try catch 直接append其中的声明语句
+                // 处理表达式语句，如方法调用和赋值，
                 if (astNode instanceof ExpressionStmt) {
                     ExpressionStmt expressionStmt = (ExpressionStmt) astNode;
                     codeString.append(indent(nestingLevel) + ": " + expressionStmt.getExpression().toString() + ";\n");
-
-                    if (expressionStmt.getComment().isPresent() && Constant.IS_ADD_COMMENT) {
+                    if (expressionStmt.getComment().isPresent() && CodeFlowParser.setting.displayComments) {
                         String comment = expressionStmt.getComment().get().asString();
                         codeString.append(indent(nestingLevel) + "note " + Constant.COMMENT_POSITION + comment.replaceAll(regexComment, "") + "\n");
                     }
@@ -141,7 +153,7 @@ public class CodeFlowUtil {
     }
 
     private static void addIfStmtComment(StringBuilder codeString, boolean isTrue, int nestingLevel, IfStmt ifStmt) {
-        if (ifStmt.getComment().isPresent() && Constant.IS_ADD_COMMENT) {
+        if (ifStmt.getComment().isPresent() && CodeFlowParser.setting.displayComments) {
             String comment = ifStmt.getComment().get().asString();
             codeString.append(indent(nestingLevel) + "floating note " + Constant.COMMENT_POSITION + comment.replaceAll(regexComment, "") + "\n");
         }

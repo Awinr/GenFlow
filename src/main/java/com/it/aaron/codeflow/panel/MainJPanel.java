@@ -23,8 +23,6 @@ public class MainJPanel extends JPanel {
         // 将工具栏添加到主面板的左边
         this.add(toolBar, BorderLayout.WEST);
         this.toolBarAddComponent(startButton, settingButton, exportButton);
-
-
     }
 
     public void toolBarAddComponent(JButton startButton, JButton settingButton, JButton exportButton) {

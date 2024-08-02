@@ -1,10 +1,13 @@
 package com.it.aaron.codeflow.test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
         ArrayList<Integer> integers = new ArrayList<>();
+        Set<Character> characters = new HashSet<>();
         integers.add(1);
         integers.get(0);
         methodA();

@@ -1,5 +1,9 @@
 package com.it.aaron.codeflow.component;
 
+import com.intellij.ide.DataManager;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
 
 import javax.swing.*;
@@ -8,7 +12,10 @@ import java.awt.event.ActionListener;
 
 
 public class SettingButton extends JButton {
+
     private boolean toolWindowCreated = true;
+
+    public StartButton startButton;
 
     public SettingButton() {
         this.setIcon(IconLoader.findIcon("/icons/settings.svg"));
@@ -19,39 +26,36 @@ public class SettingButton extends JButton {
     }
 
     private void initButton() {
-
         this.setToolTipText("settings");
         addActionListener(createSettingsActionListener());
+        IconLoader.findIcon("/icons/settings.svg"); // 使用的图标
     }
 
     private ActionListener createSettingsActionListener() {
         return new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                // 用于选择的选项
-                Object[] options = {"True", "False"};
-                int result = JOptionPane.showOptionDialog(
-                        null, // 父组件
-                        "Choose the value for addmethods:", // 消息
-                        "Settings", // 标题
-                        JOptionPane.YES_NO_OPTION, // 选项类型
-                        JOptionPane.QUESTION_MESSAGE, // 消息类型
-                        IconLoader.findIcon("/icons/settings.svg"), // 使用的图标
-                        options, // 选项
-                        toolWindowCreated ? options[0] : options[1] // 默认选择当前值
-                );
+            public void actionPerformed(ActionEvent event) {
+                DataContext dataContext = DataManager.getInstance().getDataContext();
+                Project project = CommonDataKeys.PROJECT.getData(dataContext);
+                if (project == null) return;
 
-                // 处理用户的选择
-                if (result == JOptionPane.YES_OPTION) {
-                    // 用户选择了"True"
-                    toolWindowCreated = true;
-                    System.out.println("Add Methods is now true");
-                    // 更新你的设置服务或存储
-                } else if (result == JOptionPane.NO_OPTION) {
-                    // 用户选择了"False"
-                    toolWindowCreated = false;
-                    System.out.println("Add Methods is now false");
-                    // 更新你的设置服务或存储
+                OptionsUI.OptionsDialogWrapper dialogWrapper = new OptionsUI.OptionsDialogWrapper(project);
+                dialogWrapper.show();
+                if (dialogWrapper.isOK()) {
+                    CodeFlowParamsState setting = CodeFlowParamsState.getInstance();
+
+                    //state.callDepth = dialogWrapper.getCallStackDepth();
+                    setting.displayComments = dialogWrapper.isDisplayComments();
+                    setting.noColors = dialogWrapper.isNoColor();
+                    //state.noPrivateMethods = dialogWrapper.isNoPrivateMethods();
+                    //state.noConstructors = dialogWrapper.isNoConstructors();
+
+                    // Notify parameter change.
+                    setting.fireConfigChanged();
+                    if (startButton != null) {
+                        startButton.doClick();
+                    }
+
                 }
             }
         };

@@ -7,6 +7,22 @@ public interface Constant {
             + "skinparam conditionStyle InsideDiamond\n" //判断样式为菱形
             + "skinparam ConditionEndStyle hline\n"
             ;
-    boolean IS_ADD_COMMENT = true;
+    String STYLE = "<style>\n" +
+            "activityDiagram {\n" +
+            "  BackgroundColor #00BFFF\n" +
+            "  rectangle {\n" +
+            "     BackgroundColor lightGreen\n" +
+            "  }\n" +
+            "  diamond {\n" +
+            "    BackgroundColor #FF4500\n" +
+            "  }\n" +
+            "  note {\n" +
+            "    BackgroundColor #EEEE00\n" +
+            "  }\n" +
+            "}\n" +
+            "document {\n" +
+            "   BackgroundColor while\n" +
+            "}\n" +
+            "</style>\n";
     String COMMENT_POSITION = "right:";
 }

@@ -4,30 +4,28 @@
 
     <name>CodeFlow</name>
     <description><![CDATA[
-<h3>JavaFlowDiagram for IntelliJ IDEA</h3>
+<h3>CodeFlow for IntelliJ IDEA</h3>
 <p>with this plugin, you can<br>
-+ generate Simple flow Diagram.<br>
-+ Select whether to add the common method by setting<br>
-+ Export the diagram as image.<br>
-+ Export the diagram as image.<br>
++ Generate a flowchart based on the code<br>
++ Choose whether to display the comments<br>
++ Export the flowchart as image<br>
 ]]></description>
     <version>1.2.2</version>
     <idea-version since-build="231.*"/>
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
 
-    <!-- 右边侧边栏 -->
+
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="PlantUMLToolWindow"
-                    anchor="right"
-                    canCloseContents="true"
-                    icon="/icons/codeflow.svg"
-                    factoryClass="com.it.aaron.codeflow.window.PlantUMLToolWindowFactory"
-        />
+        <!-- 右边侧边栏 -->
+        <toolWindow id="CodeFlow" anchor="right" canCloseContents="true" icon="/icons/codeflow.svg" factoryClass="com.it.aaron.codeflow.window.ToolWindow"/>
+        <!-- 插件左侧的小扳手中的设置 -->
+        <applicationService serviceImplementation="com.it.aaron.codeflow.component.CodeFlowParamsState"/>
+        <fileEditorProvider implementation="com.it.aaron.codeflow.editor.MyCustomFileEditorProvider"/>
     </extensions>
     <!-- 右键弹出菜单 -->
     <actions>
-        <action id="GenAPIDocAction" class="com.it.aaron.codeflow.action.JavaFlowDiagramAction"
+        <action id="GenAPIDocAction" class="com.it.aaron.codeflow.action.ShowFlowAction"
                 icon="/icons/codeflow.svg"
                 text="CodeFlow">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>

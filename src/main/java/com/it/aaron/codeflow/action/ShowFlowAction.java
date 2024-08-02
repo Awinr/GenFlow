@@ -1,7 +1,6 @@
 package com.it.aaron.codeflow.action;
 
 import com.github.javaparser.StaticJavaParser;
-import com.intellij.lang.Language;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -21,12 +20,12 @@ import com.it.aaron.codeflow.component.SettingButton;
 import com.it.aaron.codeflow.component.StartButton;
 import com.it.aaron.codeflow.panel.MainJPanel;
 import com.it.aaron.codeflow.panel.PlantUMLPanel;
-import com.it.aaron.codeflow.utils.CodeFlowUtil;
+import com.it.aaron.codeflow.utils.CodeFlowParser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
-public class JavaFlowDiagramAction extends AnAction {
+public class ShowFlowAction extends AnAction {
 
     public AnActionEvent event;
 
@@ -91,16 +90,17 @@ public class JavaFlowDiagramAction extends AnAction {
         }
         Result result = new Result(project, methodBody);
         // 创建流程图内容
-        CodeFlowUtil.createPlantUml(codeString, StaticJavaParser.parseBlock(result.methodBody.getText()), settingButton.isToolWindowCreated());
+        CodeFlowParser.createPlantUml(codeString, StaticJavaParser.parseBlock(result.methodBody.getText()), true);
 
         // 创建流程图内容面板
         plantUMLPanel = new PlantUMLPanel(codeString.toString());
         // 启动内容
         startButton = new StartButton(result.getProject(), event);
+        settingButton.startButton = startButton;
         exportButton = new ExportButton(result.getProject(), event, plantUMLPanel.getPlantUmlImage());
         mainJPanel = new MainJPanel(plantUMLPanel, startButton, settingButton, exportButton);
         // 获取 ToolWindow
-        ToolWindow toolWindow = ToolWindowManager.getInstance(result.getProject()).getToolWindow("PlantUMLToolWindow");
+        ToolWindow toolWindow = ToolWindowManager.getInstance(result.getProject()).getToolWindow("CodeFlow");
         // 设置内容
         toolWindow.getContentManager().removeAllContents(true); // 清除之前的内容
         ContentFactory contentFactory = ContentFactory.getInstance();
